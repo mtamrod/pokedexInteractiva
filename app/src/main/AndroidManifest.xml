@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pokedex_mtamrod">
         <activity
-            android:name=".MainActivity"
+            android:name=".appui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Pokedex_mtamrod">
