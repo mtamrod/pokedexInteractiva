@@ -2,6 +2,7 @@ package com.example.pokedex_mtamrod.appui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -22,69 +23,84 @@ import com.example.pokedex_mtamrod.model.PokemonType
 @Composable
 fun PokemonCard(
     pokemon: Pokemon,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Pokemon) -> Unit = {}
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .clickable { onClick(pokemon) },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF3F3F3) // color base neutro
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F3F3)),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(12.dp)
+
+        Row(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // Imagen drawable
             val imageResId = pokemon.imageResId
-
             if (imageResId != null && imageResId != 0) {
                 Image(
                     painter = painterResource(id = imageResId),
                     contentDescription = pokemon.nombre,
-                    modifier = Modifier.size(90.dp),
+                    modifier = Modifier
+                        .size(75.dp)
+                        .padding(end = 8.dp),
                     contentScale = ContentScale.Fit
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // Nombre del Pokémon
-            Text(
-                text = pokemon.nombre,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
-            )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
+            ) {
 
-            Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "#${pokemon.id.toString().padStart(3, '0')}",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
 
-            // Tarjetas de tipos
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                TipoChip(tipo = pokemon.tipoPrincipal)
+                Text(
+                    text = pokemon.nombre,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
 
-                pokemon.tipoSecundario?.let {
-                    TipoChip(tipo = it)
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Column {
+                    TipoChip(tipo = pokemon.tipoPrincipal)
+
+                    pokemon.tipoSecundario?.let {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        TipoChip(tipo = it)
+                    }
                 }
             }
         }
     }
 }
 
+
 @Composable
 fun TipoChip(tipo: PokemonType) {
     Box(
         modifier = Modifier
             .background(
-                color = Color.Black.copy(alpha = 0.10f),
+                color = tipo.color,
                 shape = RoundedCornerShape(50)
             )
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
-            text = tipo.name, // Tipo de la lista enum de tipos
+            text = tipo.name,
             style = MaterialTheme.typography.bodySmall,
-            color = Color.Black
+            color = Color.Black,
+            maxLines = 1
         )
     }
 }
